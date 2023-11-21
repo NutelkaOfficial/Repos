@@ -1,0 +1,142 @@
+#include <iostream> 
+#include <fstream> 
+#include <string>
+using namespace std;
+
+struct q {
+    string l;
+    string f;
+    string num;
+    int arr[3];
+};
+ 
+void read() {
+    ifstream fin("NOTE.bin", ios::binary);
+
+    if (!fin) {
+        cerr << "Ошибка открытия файла" << endl;
+        return;
+    }
+
+    q p;
+
+    while (fin.read(reinterpret_cast<char*>(&p), sizeof(p))) {
+        cout << "Фамилия: " << p.l << endl;
+        cout << "Имя: " << p.f << endl;
+        cout << "Номер телефона: " << p.num << endl;
+        cout << "Дата рождения: ";
+        for (int i = 0; i < 3; i++) {
+            cout << p.arr[i] << " ";
+        }
+        cout << endl << "---------------------" << endl;
+    }
+
+    fin.close();
+}
+
+void out(string number) {
+    ifstream fin("NOTE.bin", ios::binary);
+
+    if (!fin) {
+        cerr << "Ошибка открытия файла" << endl;
+        return;
+    }
+
+    q person;
+
+    bool found = false;
+
+    while (fin.read(reinterpret_cast<char*>(&person), sizeof(person))) {
+        if (person.num == number) {
+            cout << "Фамилия: " << person.l << endl;
+            cout << "Имя: " << person.f << endl;
+            cout << "Номер телефона: " << person.num << endl;
+            cout << "Дата рождения: ";
+            for (int i = 0; i < 3; i++) {
+                cout << person.arr[i] << " ";
+            }
+            cout << endl << "---------------------" << endl;
+
+            found = true;
+        }
+    }
+
+    fin.close();
+
+    if (!found) {
+        cout << "Контакт с номером телефона " << number << " не найден." << endl;
+    }
+}
+
+
+
+void in() {
+    ofstream fout("NOTE.bin", ios::app | ios::binary);
+
+    q p;
+
+    cout << "Введите фамилию: ";
+    cin >> p.l;
+
+    cout << "Введите имя: ";
+    cin >> p.f;
+
+    cout << "Введите номер телефона: +7";
+    cin >> p.num;
+
+    cout << "Введите дату рождения: ";
+    for (int i = 0; i < 3; i++) 
+    {
+        cin >> p.arr[i];
+    }
+
+    fout.write(reinterpret_cast<char*>(&p), sizeof(p));
+
+    fout.close();
+}
+
+void menu()
+{
+    int a;
+    cout << "NOTE" << endl << endl;
+    cout << "Ввести новые данные\t" << 1 << endl;
+    cout << "Прочитать данные\t" << 2 << endl;
+    cout << "Вывод чел-ка по номеру\t" << 3 << endl;
+    cin >> a;
+    switch (a) {
+        {
+    case 1:
+    {
+        in();
+        break;
+    }
+    case 2:
+    {
+        read();
+        break;
+    }
+    case 3:
+    {
+        string OAOAOAOAOA;
+        cout << "Введите номер телефона для поиска: +7";
+        cin >> OAOAOAOAOA;
+        out(OAOAOAOAOA);
+        break;
+    }
+    default:
+        cout << "Такого варианта нет, введите число от 1 до 3 " << endl;
+        menu();
+        break;
+        }
+    }
+
+}
+
+
+int main()
+{
+    setlocale(LC_ALL, "ru");
+    menu();
+}
+
+
